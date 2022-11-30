@@ -2,7 +2,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
 const app = require('../../../src/app');
-const products = require('../../product.mock.json');
+const allProducts = require('./mocks/products.mock');
+const productsModel = require('../../../src/models/products.model');
 // importado para fazer o dublê
 const connection = require('../../../src/models/connection');
 const { execute } = require('../../../src/models/connection');
@@ -13,21 +14,30 @@ chai.use(chaiHttp);
 
 describe('Test the products model', () => {
 
-  describe('Test the get /products', () => {
+  describe('Test the getAll in "/products"', () => {
     before(async () => {
-      sinon.stub(connection, 'execute').resolves([]);
+      sinon.stub(connection, 'execute').resolves([allProducts]);
     });
 
     after(async () => {
       sinon.restore()
     })
-    it('get with sucess', async () => {
-      const response = await chai
-        .request(app)
-        .get('/products');
-      
-      expect(response.status).to.be.equal(200);
-      expect(response).to.equal(products);
+    it('getAll with sucess', async () => {
+      const response = await productsModel.getAll();
+      expect(response).to.equal(allProducts);
+    });
+  });
+  describe('Test the getById in "/products"', () => {
+    before(async () => {
+      sinon.stub(connection, 'execute').resolves([[allProducts[0]]]);
+    });
+
+    after(async () => {
+      sinon.restore()
+    })
+    it('getBYId with sucess', async () => {
+      const response = await productsModel.getById(1);
+      expect(response).to.equal(allProducts[0]);
     });
   });
 });

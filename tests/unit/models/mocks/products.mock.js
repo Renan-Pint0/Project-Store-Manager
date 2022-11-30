@@ -1,4 +1,4 @@
-[
+const allProducts = [
   {
     "id": 1,
     "name": "Martelo de Thor"
@@ -12,3 +12,7 @@
     "name": "Escudo do Capitão América"
   }
 ]
+
+module.exports = {
+  allProducts,
+}
