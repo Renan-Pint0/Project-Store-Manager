@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
 const app = require('../../../src/app');
+const sinonChai = require('sinon-chai');
 const allSales = require('../models/mocks/sales.mock');
 const salesController = require('../../../src/controllers/sales.controller');
 // importado para fazer o dublê
@@ -11,6 +12,7 @@ const { execute } = require('../../../src/models/connection');
 const { expect } = chai;
 
 chai.use(chaiHttp);
+chai.use(sinonChai);
 
 describe('Test the sales controller', () => {
 
@@ -20,7 +22,7 @@ describe('Test the sales controller', () => {
     before(async () => {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
-      sinon.stub(salesService, 'getAll').resolves({ type: null, message: allSales });
+      sinon.stub(salesService, 'getAll').resolves(allSales);
     });
 
     after(async () => {
@@ -34,20 +36,20 @@ describe('Test the sales controller', () => {
   });
   describe('Test the getById in "/sales"', () => {
     const res = {};
-    const req = {};
+    const req = { params: { id: 1 } };
     before(async () => {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
-      sinon.stub(salesService, 'getById').resolves({ type: null, message: allSales.saleById });
+      sinon.stub(salesService, 'getById').resolves(allSales.saleById);
     });
 
     after(async () => {
       sinon.restore()
     })
     it('getBYId with sucess', async () => {
-      await salesService.getById(1);
-      expect(res.status).to.have.be.calledWith(200);
-      expect(res.json).to.have.be.calledWith(allSales.saleById);
+      await salesController.getById(req, res);
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(allSales.saleById);
     });
   });
 });

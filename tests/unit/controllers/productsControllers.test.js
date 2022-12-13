@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
 const app = require('../../../src/app');
+const sinonChai = require('sinon-chai');
 const allProducts = require('../models/mocks/products.mock');
 const productsController = require('../../../src/controllers/products.controller');
 // importado para fazer o dublê
@@ -11,6 +12,7 @@ const { execute } = require('../../../src/models/connection');
 const { expect } = chai;
 
 chai.use(chaiHttp);
+chai.use(sinonChai);
 
 describe('Test the products controller', () => {
 
@@ -34,7 +36,7 @@ describe('Test the products controller', () => {
   });
   describe('Test the getById in "/products"', () => {
     const res = {};
-    const req = {};
+    const req = { params: { id: 1 } };
     before(async () => {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
@@ -45,9 +47,9 @@ describe('Test the products controller', () => {
       sinon.restore()
     })
     it('getBYId with sucess', async () => {
-      const response = await productsService.getById(1);
-      expect(res.status).to.have.be.calledWith(200);
-      expect(res.json).to.have.be.calledWith([allProducts[0]]);
+      const response = await productsController.getProductsById(req, res);
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith([allProducts[0]]);
     });
   });
 });
