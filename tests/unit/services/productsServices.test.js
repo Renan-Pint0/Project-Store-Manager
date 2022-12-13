@@ -39,14 +39,4 @@ describe('Test the products service', () => {
       expect(response).to.be.deep.equal([allProducts[0]]);
     });
   });
-  describe('Test the getById in "/products"', () => {
-    after(async () => {
-      sinon.restore()
-    })
-    it('getBYId with no sucess', async () => {
-      sinon.stub(productsModel, 'getById').resolves([]);
-      const response = await productsService.getById(1);
-      expect(response).to.have.nested.property('message', 'Product not found');
-    });
-  });
 });
