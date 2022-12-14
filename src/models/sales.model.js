@@ -26,6 +26,13 @@ const getById = async (saleId) => {
     );
     return (result);
 };
+const getSalesById = async (saleId) => {
+  const [[result]] = await connection.execute(
+    'SELECT * FROM sales WHERE id = ?',
+    [saleId],
+  );
+  return (result);
+};
 
 const getSalesProductsById = async (saleId) => {
   const [result] = await connection.execute(
@@ -42,10 +49,25 @@ const registerSale = async () => {
   return sale;
 };
 
-const registerSaleProducts = async (saleId, productId, quantity) => {
-  const result = await connection.execute(
+const registerSaleProducts = async (saleId, sale) => {
+  const [result] = await connection.execute(
     'INSERT INTO StoreManager.sales_products (sale_id, product_id, quantity) VALUES (?, ?, ?)',
-    [saleId, productId, quantity],
+    [saleId, ...Object.values(sale)],
+  );
+  return result;
+};
+const updateSale = async (productId, quantity, saleId) => {
+  const [{ affectRows }] = await connection.execute(
+    'UPDATE StoreManager.products SET product_id = ? quantity = ? WHERE id = ?',
+    [productId, quantity, saleId],
+  );
+  return affectRows;
+};
+
+const deleteSale = async (saleId) => {
+  const result = await connection.execute(
+    'DELETE FROM StoreManager.sales WHERE id = ?',
+    [saleId],
   );
   return result;
 };
@@ -56,4 +78,7 @@ module.exports = {
   registerSale,
   registerSaleProducts,
   getSalesProductsById,
+  deleteSale,
+  getSalesById,
+  updateSale,
 };

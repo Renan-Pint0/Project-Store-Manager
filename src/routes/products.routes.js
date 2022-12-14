@@ -4,6 +4,7 @@ const vaalidateName = require('../middlewares/vaalidateName');
 
 const productsRouter = express.Router();
 
+productsRouter.get('/search', productsController.querySearch);
 productsRouter.get('/', productsController.getAllProducts);
 productsRouter.get('/:id', productsController.getProductsById);
 productsRouter.post('/', vaalidateName, productsController.registerProduct);

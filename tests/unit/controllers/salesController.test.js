@@ -1,13 +1,10 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const sinon = require('sinon');
-const app = require('../../../src/app');
 const sinonChai = require('sinon-chai');
 const allSales = require('../models/mocks/sales.mock');
 const salesController = require('../../../src/controllers/sales.controller');
-// importado para fazer o dublê
 const salesService = require('../../../src/services/sales.service');
-const { execute } = require('../../../src/models/connection');
 
 const { expect } = chai;
 
@@ -50,6 +47,23 @@ describe('Test the sales controller', () => {
       await salesController.getById(req, res);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.json).to.have.been.calledWith(allSales.saleById);
+    });
+  });
+  describe('Test the deleteSale in "/sales"', () => {
+    const res = {};
+    const req = { params: { id: 1 } };
+    before(async () => {
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(salesService, 'deleteSale').resolves('');
+    });
+
+    after(async () => {
+      sinon.restore()
+    })
+    it('deleteSale with sucess', async () => {
+      await salesController.deleteSale(req, res);
+      expect(res.status).to.have.been.calledWith(204);
     });
   });
 });

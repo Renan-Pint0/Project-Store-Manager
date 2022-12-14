@@ -4,7 +4,7 @@ const getAll = async () => {
   const [result] = await connection.execute(
     'SELECT * FROM products',
   );
- 
+
   return result;
 };
 
@@ -13,7 +13,7 @@ const getById = async (productId) => {
     'SELECT * FROM products WHERE id = ?',
     [productId],
   );
-  return (result);
+  return result;
 };
 
 const registerProduct = async ({ name }) => {
@@ -35,10 +35,19 @@ const updateProducts = async (productName, productId) => {
   return productId;
 };
 const deleteProduct = async (productId) => {
-  await connection.execute(
+  const result = await connection.execute(
     'DELETE FROM StoreManager.products WHERE id = ?',
     [productId],
   );
+  return result;
+};
+
+const querySearch = async (q) => {
+  const [result] = await connection.execute(
+    'SELECT * FROM StoreManager.products WHERE name LIKE ?',
+    [q],
+  );
+  return result;
 };
 
 module.exports = {
@@ -47,4 +56,5 @@ module.exports = {
   registerProduct,
   updateProducts,
   deleteProduct,
+  querySearch,
 };
